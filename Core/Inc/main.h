@@ -67,6 +67,8 @@ void Error_Handler(void);
 #define ADC_ON_GPIO_Port GPIOA
 #define HALL2_Pin GPIO_PIN_6
 #define HALL2_GPIO_Port GPIOA
+#define C_PWR_Pin GPIO_PIN_10
+#define C_PWR_GPIO_Port GPIOB
 #define TEST1_Pin GPIO_PIN_11
 #define TEST1_GPIO_Port GPIOB
 #define Led_Pin GPIO_PIN_14

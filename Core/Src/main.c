@@ -106,6 +106,8 @@ int main(void)
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
 
+  HAL_GPIO_WritePin(C_PWR_GPIO_Port, C_PWR_Pin, GPIO_PIN_SET);
+
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);
 
@@ -133,7 +135,6 @@ int main(void)
   if (!test)
   {
 	  HAL_I2C_EnableListen_IT(&hi2c1);
-	  HAL_Delay(500);
 	  HAL_GPIO_WritePin(Led_GPIO_Port, Led_Pin, GPIO_PIN_RESET);
   }
 

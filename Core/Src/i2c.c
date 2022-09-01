@@ -174,14 +174,14 @@ void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
 		offset++;
 	}
 	uint8_t* addres = (offset < sizeof(MemoryMap)) ? &ram[offset] : (uint8_t *)&MOC;
-	HAL_I2C_Slave_Seq_Receive_IT(hi2c, &ram[offset], 1, I2C_NEXT_FRAME);
+	HAL_I2C_Slave_Seq_Receive_IT(hi2c, addres, 1, I2C_NEXT_FRAME);
 }
 
 void HAL_I2C_SlaveTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
 	offset++;
 	uint8_t* addres = (offset < sizeof(MemoryMap)) ? &ram[offset] : (uint8_t *)&MOC;
-	HAL_I2C_Slave_Seq_Transmit_IT(hi2c, &ram[offset], 1, I2C_NEXT_FRAME);
+	HAL_I2C_Slave_Seq_Transmit_IT(hi2c, addres, 1, I2C_NEXT_FRAME);
 }
 
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)

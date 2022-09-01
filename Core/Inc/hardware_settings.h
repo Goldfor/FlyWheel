@@ -24,14 +24,14 @@
 #define SetWriteCount 0
 
 #define DefaultConfig \
-	0x29, \
+	0x09, \
 	0x38, \
 	0, \
 	0, \
 	0, \
 	0, \
 	3000, \
-	6000, \
+	0, \
 	10.5f, \
 	0.5f, \
 	5.0f, \
