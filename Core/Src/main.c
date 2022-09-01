@@ -137,6 +137,16 @@ int main(void)
 	  HAL_I2C_EnableListen_IT(&hi2c1);
 	  HAL_GPIO_WritePin(Led_GPIO_Port, Led_Pin, GPIO_PIN_RESET);
   }
+  else
+  {
+	  for (uint8_t i = 0; i < 10; i++)
+	  {
+		  HAL_GPIO_WritePin(Led_GPIO_Port, Led_Pin, GPIO_PIN_RESET);
+		  HAL_Delay(500);
+		  HAL_GPIO_WritePin(Led_GPIO_Port, Led_Pin, GPIO_PIN_SET);
+		  HAL_Delay(500);
+	  }
+  }
 
   /* USER CODE END 2 */
 
@@ -205,6 +215,13 @@ void Calibration_Motor()
 	if (NowSettings.F_Min_Force != 0)
 	{
 		return;
+	}
+	for (uint8_t i = 0; i < 5; i++)
+	{
+		HAL_GPIO_WritePin(Led_GPIO_Port, Led_Pin, GPIO_PIN_RESET);
+		HAL_Delay(500);
+		HAL_GPIO_WritePin(Led_GPIO_Port, Led_Pin, GPIO_PIN_SET);
+		HAL_Delay(500);
 	}
 	int16_t nowPWM = 0;
 
