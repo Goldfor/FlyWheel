@@ -204,6 +204,7 @@ void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
 			Clear_Chanel(1);
 		}
 		Select_Setting(&DefaultSettings, &NowSettings);
+		Set_Configuration(NowSettings.Config);
 #if CanWriteMemoryFromI2C
 		if(writeToMemory)
 		{
