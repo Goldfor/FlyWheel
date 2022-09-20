@@ -88,7 +88,7 @@ void Calculate_Channel(uint8_t channel)
 		}
 #endif
 		float val = Prop + Integral[channel] + Dif;
-		if (abs(val) < 100)
+		if (abs(*NeedSpeed) < 10 && abs(*CurrentSpeed) < 200)
 		{
 			val = 0;
 		}
