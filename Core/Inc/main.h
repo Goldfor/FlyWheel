@@ -59,8 +59,6 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define PWM_MOTOR_Pin GPIO_PIN_0
 #define PWM_MOTOR_GPIO_Port GPIOA
-#define POLARITY_MOTOR_Pin GPIO_PIN_3
-#define POLARITY_MOTOR_GPIO_Port GPIOA
 #define POLARITY_COIL_Pin GPIO_PIN_4
 #define POLARITY_COIL_GPIO_Port GPIOA
 #define ADC_ON_Pin GPIO_PIN_5

@@ -26,7 +26,7 @@ void Set_Channel_Raw(uint8_t channel, int32_t value)
 	GPIO_PinState polarity = value > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET;
 	if (absValue >= 0x7FFF)
 	{
-		absValue = 0x7FFF;
+		absValue = 0xFFFF;
 	}
 	else
 	{
