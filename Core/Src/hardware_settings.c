@@ -26,7 +26,7 @@ void Set_Channel_Raw(uint8_t channel, int32_t value)
 	GPIO_PinState polarity = value > 0 ? GPIO_PIN_SET : GPIO_PIN_RESET;
 	if (absValue >= 0x7FFF)
 	{
-		absValue = 0xFFFF;
+		absValue = 0x7FFF;
 	}
 	else
 	{
@@ -72,22 +72,15 @@ void Calculate_Channel(uint8_t channel)
 			*NeedSpeed = -(*MaxAbsSpeed);
 		}
 		float *Kp = Min_Force + 1, *Ki = Kp + 1, *Kd = Ki + 1;
-		int32_t error = *NeedSpeed - *CurrentSpeed;
+
+		int32_t error = (1000.0/950)*(*NeedSpeed) - *CurrentSpeed;
+//						 ^ компенсация трения
 
 		float Prop = *Kp * error;
 
-		float Dif = *Kd * (error - lastError[channel]);
+		float Dif = 0;//*Kd * (error - lastError[channel]);
 		lastError[channel] = error;
 
-		Integral[channel] = Integral[channel] + (*Ki * error);
-		if (Integral[channel] > 0x7FFF)
-		{
-			Integral[channel] = 0x7FFF;
-		}
-		if (Integral[channel] < -0x7FFF)
-		{
-			Integral[channel] = -0x7FFF;
-		}
 #if SilentMode
 		if (error == 0 && *NeedSpeed == 0)
 		{
@@ -105,7 +98,13 @@ void Calculate_Channel(uint8_t channel)
 			val += val > 0 ? *Min_Force : -(*Min_Force);
 		}
 #endif
-		Set_Channel_Raw(channel, val);
+		if(val < 32766 && val > -32766)
+		{
+			Integral[channel] = Integral[channel] + (*Ki * error);
+		}
+		if(val > 32766) val = 32766;
+		if(val < -32766) val = -32766;
+		Set_Channel_Raw(channel, (int32_t)val);
 	}
 }
 

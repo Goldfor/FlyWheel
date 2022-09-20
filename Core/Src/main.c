@@ -245,6 +245,26 @@ void Calibration_Motor()
 		HAL_Delay(100);
 	}
 	NowSettings.Config = config;
+
+
+	float Kp = 0.0857; // Коэффициент усиления системы ШИМ-обороты
+	float Tp = 20; // Большая постоянная времени (с)
+	float Tpu = 0.5; // Малая постоянная времени (с)
+
+	float Kk = Tp/(2*Kp*Tpu);
+	float Tk = Tp;
+
+	// KT/T+KT/s;
+	// KP = K;
+	// KI = KT;
+
+	float KP = Kk;			// Kp регулятора
+	float KI = Kk/Tk*0.1;	// Ki регулятора
+	//				 ^ период ПИДа (100мс)
+
+	NowSettings.F_P = KP;
+	NowSettings.F_I = KI;
+	NowSettings.F_D = 0;
 }
 
 void Memory_Manage()
@@ -276,7 +296,7 @@ void Motor_Process(void)
 	{
 		Calculate_Channel(0);
 		Calculate_Channel(1);
-		lastTime += 100;
+		lastTime += 100; // период обновления, мс
 	}
 }
 void Test_Process(uint8_t test)
