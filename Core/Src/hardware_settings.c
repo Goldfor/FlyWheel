@@ -9,13 +9,13 @@ void Set_Configuration(uint8_t configuration)
 	 */
 	if (configuration & (1 << 3))
 	{
-		__HAL_TIM_SET_AUTORELOAD(&htim3, 3000); // Рассчитанное значение / 2
-		__HAL_TIM_SET_AUTORELOAD(&htim4, 3000); // Рассчитанное значение / 2
+		__HAL_TIM_SET_AUTORELOAD(&htim3, 29999); // Рассчитанное значение / 2
+		__HAL_TIM_SET_AUTORELOAD(&htim4, 29999); // Рассчитанное значение / 2
 	}
 	else
 	{
-		__HAL_TIM_SET_AUTORELOAD(&htim3, 6000); // Рассчитанное значение
-		__HAL_TIM_SET_AUTORELOAD(&htim4, 6000); // Рассчитанное значение
+		__HAL_TIM_SET_AUTORELOAD(&htim3, 59999); // Рассчитанное значение
+		__HAL_TIM_SET_AUTORELOAD(&htim4, 59999); // Рассчитанное значение
 	}
 }
 
@@ -78,7 +78,7 @@ void Calculate_Channel(uint8_t channel)
 
 		float Prop = *Kp * error;
 
-		float Dif = 0;//*Kd * (error - lastError[channel]);
+		float Dif = *Kd * (error - lastError[channel]);
 		lastError[channel] = error;
 
 #if SilentMode
@@ -128,7 +128,9 @@ int16_t CalculateRPM(int8_t state, int32_t counter)
 	{
 		counter <<= 1;
 	}
-	return (60000 * abs(state)) / counter;
+	double speed = (600000 * abs(state));
+	speed = speed / counter;
+	return speed;
 }
 
 void Select_Setting(MemoryMap *from, volatile MemoryMap *to)

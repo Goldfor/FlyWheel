@@ -47,7 +47,7 @@ void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 0;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 65535;
+  htim1.Init.Period = 65534;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -106,7 +106,7 @@ void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 0;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 65535;
+  htim2.Init.Period = 65534;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
@@ -148,9 +148,9 @@ void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 35999;
+  htim3.Init.Prescaler = 3599;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 60000;
+  htim3.Init.Period = 59999;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_IC_Init(&htim3) != HAL_OK)
@@ -199,9 +199,9 @@ void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 35999;
+  htim4.Init.Prescaler = 3599;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 60000;
+  htim4.Init.Period = 59999;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_IC_Init(&htim4) != HAL_OK)
@@ -447,16 +447,18 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 				case 0:
 					nowState++;
 					averageTime = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-#if MulFreqSensor >= 3
-					NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
-#endif
+					if ((NowSettings.Clock_Setting & 3) >= 2)
+					{
+						NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
+					}
 					break;
 				case -1:
 					nowState--;
 					averageTime -= HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-#if MulFreqSensor >= 2
-					NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
-#endif
+					if ((NowSettings.Clock_Setting & 3) >= 1)
+					{
+						NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
+					}
 					break;
 				default:
 					nowState = 0;
@@ -471,16 +473,18 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 				case 2:
 					nowState++;
 					averageTime += HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
-#if MulFreqSensor >= 4
-					NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
-#endif
+					if ((NowSettings.Clock_Setting & 3) >= 3)
+					{
+						NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
+					}
 					break;
 				case -3:
 					nowState--;
 					averageTime -= HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
-#if MulFreqSensor >= 1
-					NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
-#endif
+					if ((NowSettings.Clock_Setting & 3) >= 0)
+					{
+						NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
+					}
 				break;
 				default:
 					nowState = 0;
@@ -499,16 +503,18 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 				case 0:
 					nowState--;
 					averageTime = -HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-#if MulFreqSensor >= 3
-					NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
-#endif
+					if ((NowSettings.Clock_Setting & 3) >= 2)
+					{
+						NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
+					}
 					break;
 				case 1:
 					nowState++;
 					averageTime += HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-#if MulFreqSensor >= 2
-					NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
-#endif
+					if ((NowSettings.Clock_Setting & 3) >= 1)
+					{
+						NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
+					}
 					break;
 				default:
 					nowState = 0;
@@ -523,16 +529,18 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 				case 3:
 					nowState++;
 					averageTime += HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
-#if MulFreqSensor >= 1
-					NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
-#endif
+					if ((NowSettings.Clock_Setting & 3) >= 0)
+					{
+						NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
+					}
 					break;
 				case -2:
 					nowState--;
 					averageTime -= HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
-#if MulFreqSensor >= 4
-					NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
-#endif
+					if ((NowSettings.Clock_Setting & 3) >= 3)
+					{
+						NowSettings.Current_F_ChannelSpeed = CalculateRPM(nowState, averageTime);
+					}
 				break;
 				default:
 					nowState = 0;

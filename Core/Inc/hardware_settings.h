@@ -18,7 +18,6 @@
 #define SilentMode 1
 #define ProgramMemory 1
 #define UsingMinForce 1
-#define MulFreqSensor 4
 #define CanWriteMemoryFromI2C 1
 
 #define SetVersion 0
@@ -28,7 +27,7 @@
 	0x09, \
 	0x38, \
 	0, \
-	0, \
+	3, \
 	0, \
 	0, \
 	3000, \
@@ -55,7 +54,9 @@ typedef struct
 					/*		 |RV1|RV2|MC1|MC2|DM1|DM2| */
 	uint8_t BaseAddress; // 1
 	uint8_t Reserve1; // 2
-	uint8_t Reserve2; // 3
+	uint8_t Clock_Setting; // 3
+	/*|	7|	6|	5|	4|	3|	2|	1|	0| Default = 0x03*/
+	/*		 |   |   |   |   |MulSens| */
 	int16_t Need_F_ChannelSpeed; // 4
 	int16_t Current_F_ChannelSpeed; // 6
 	uint16_t F_MaxAbsSpeed; // 8
@@ -70,8 +71,8 @@ typedef struct
 	float S_p; // 32
 	float S_I; // 36
 	float S_D; // 40
-	uint8_t Reserve3; // 44
-	uint8_t Reserve4; // 45
+	uint8_t Reserve2; // 44
+	uint8_t Reserve3; // 45
 	uint8_t Version; // 46
 	uint8_t WriteToMemory; // 47
 } MemoryMap;
