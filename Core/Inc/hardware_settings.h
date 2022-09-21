@@ -17,17 +17,16 @@
 #define ChannelCount 2
 #define SilentMode 1
 #define ProgramMemory 1
-#define UsingMinForce 1
 #define CanWriteMemoryFromI2C 1
 
 #define SetVersion 0
 #define SetWriteCount 0
 
 #define DefaultConfig \
-	0x09, \
+	0x01, \
 	0x38, \
 	0, \
-	3, \
+	0x0C, \
 	0, \
 	0, \
 	3000, \
@@ -50,13 +49,13 @@
 
 typedef struct
 {
-	uint8_t Config; /*|	7|	6|	5|	4|	3|	2|	1|	0| Default = 0x09*/
-					/*		 |RV1|RV2|MC1|MC2|DM1|DM2| */
+	uint8_t Config; /*	 |	7|	6|	5|	4|	3|	2|	1|	0| Default = 0x09*/
+					/*	 |MF1|MF2|RV2|SM1|SM2|DM1|DM2| */
 	uint8_t BaseAddress; // 1
 	uint8_t Reserve1; // 2
 	uint8_t Clock_Setting; // 3
 	/*|	7|	6|	5|	4|	3|	2|	1|	0| Default = 0x03*/
-	/*		 |   |   |   |   |MulSens| */
+	/*		 |   |   |MC1|MC2|MulSens| */
 	int16_t Need_F_ChannelSpeed; // 4
 	int16_t Current_F_ChannelSpeed; // 6
 	uint16_t F_MaxAbsSpeed; // 8

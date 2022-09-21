@@ -81,23 +81,28 @@ void Calculate_Channel(uint8_t channel)
 		float Dif = *Kd * (error - lastError[channel]);
 		lastError[channel] = error;
 
-#if SilentMode
-		if (error == 0 && *NeedSpeed == 0)
+		if (NowSettings.Config & (channel == 0 ? 0x08 : 0x04))
 		{
-			Integral[channel] = 0;
+			if (error == 0 && *NeedSpeed == 0)
+			{
+				Integral[channel] = 0;
+			}
 		}
-#endif
+
 		float val = Prop + Integral[channel] + Dif;
+
 		if (abs(*NeedSpeed) < 10 && abs(*CurrentSpeed) < 200)
 		{
 			val = 0;
 		}
-#if UsingMinForce
 		else
 		{
-			val += val > 0 ? *Min_Force : -(*Min_Force);
+			if (NowSettings.Config & (channel == 0 ? 0x80 : 0x40))
+			{
+				val += val > 0 ? *Min_Force : -(*Min_Force);
+			}
 		}
-#endif
+
 		if(val < 32766 && val > -32766)
 		{
 			Integral[channel] = Integral[channel] + (*Ki * error);
@@ -124,7 +129,7 @@ int16_t CalculateRPM(int8_t state, int32_t counter)
 	 * 120000 / (bufTime / 2) обороты в минуту
 	 * 240000 / bufTime обороты в минуту
 	 */
-	if (NowSettings.Config & 0x08)
+	if (NowSettings.Clock_Setting & 0x08)
 	{
 		counter <<= 1;
 	}
