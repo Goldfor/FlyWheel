@@ -114,6 +114,23 @@ void Clear_Chanel(uint8_t channel)
 	lastError[channel] = channel == 0 ? NowSettings.Current_F_ChannelSpeed : NowSettings.Current_S_ChannelSpeed;
 }
 
+int16_t CalculateRPM(int8_t state, int32_t counter)
+{
+	/*
+	 * 72000000 / 36000 = 2000 раз в секунду;
+	 * минута в секунды = 60;
+	 * минута в тиках = 120000;
+	 * ufTime = 2 * Время одного цикла (оборота);
+	 * 120000 / (bufTime / 2) обороты в минуту
+	 * 240000 / bufTime обороты в минуту
+	 */
+	if (NowSettings.Config & 0x08)
+	{
+		counter <<= 1;
+	}
+	return (60000 * abs(state)) / counter;
+}
+
 void Select_Setting(MemoryMap *from, volatile MemoryMap *to)
 {
 	if ((uint32_t)to < 0x20000000)

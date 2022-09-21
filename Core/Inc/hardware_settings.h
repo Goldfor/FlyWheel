@@ -18,6 +18,7 @@
 #define SilentMode 1
 #define ProgramMemory 1
 #define UsingMinForce 1
+#define MulFreqSensor 4
 #define CanWriteMemoryFromI2C 1
 
 #define SetVersion 0
@@ -85,5 +86,6 @@ void Clear_Chanel(uint8_t channel);
 
 void Select_Setting(MemoryMap *from, volatile MemoryMap *to);
 
+int16_t CalculateRPM(int8_t state, int32_t counter);
 
 #endif /* INC_HARDWARE_SETTINGS_H_ */

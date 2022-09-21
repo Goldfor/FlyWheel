@@ -131,7 +131,7 @@ int main(void)
   NowSettings.Need_S_ChannelSpeed = 0;
   NowSettings.Need_F_ChannelSpeed = 0;
 
-  uint8_t test = !HAL_GPIO_ReadPin(TEST1_GPIO_Port, TEST1_Pin);
+  uint8_t test = !HAL_GPIO_ReadPin(TEST1_GPIO_Port, TEST1_Pin) | 1;
   if (!test)
   {
 	  HAL_I2C_EnableListen_IT(&hi2c1);
