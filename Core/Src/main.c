@@ -124,7 +124,7 @@ int main(void)
 
   MX_I2C1_Init(addr);
 
-  Set_Configuration(NowSettings.Config);
+  Set_Configuration();
 
   Calibration_Motor();
 
@@ -212,7 +212,7 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void Calibration_Motor()
 {
-	if (NowSettings.F_Min_Force != 0)
+	if (NowSettings.Calibration != 0)
 	{
 		return;
 	}
@@ -236,9 +236,8 @@ void Calibration_Motor()
 	{
 		NowSettings.Config ^= 1 << 5;
 	}
-	Select_Setting(&NowSettings, (MemoryMap *)&EEPROM_SETTING);
 	uint8_t config = NowSettings.Config;
-	NowSettings.Config |= 0x08;
+	NowSettings.Config |= 0x02;
 	while(NowSettings.Current_F_ChannelSpeed != 0)
 	{
 		Calculate_Channel(0);
@@ -254,10 +253,6 @@ void Calibration_Motor()
 	float Kk = Tp/(2*Kp*Tpu);
 	float Tk = Tp;
 
-	// KT/T+KT/s;
-	// KP = K;
-	// KI = KT;
-
 	float KP = Kk;			// Kp регулятора
 	float KI = Kk/Tk*0.1;	// Ki регулятора
 	//				 ^ период ПИДа (100мс)
@@ -265,6 +260,8 @@ void Calibration_Motor()
 	NowSettings.F_P = KP;
 	NowSettings.F_I = KI;
 	NowSettings.F_D = 0;
+	NowSettings.Calibration = 1;
+	Select_Setting(&NowSettings, (MemoryMap *)&EEPROM_SETTING);
 }
 
 void Memory_Manage()

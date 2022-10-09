@@ -1,13 +1,13 @@
 #include "hardware_settings.h"
 
-void Set_Configuration(uint8_t configuration)
+void Set_Configuration()
 {
 	/**
 	 * Ограничение на минимальное измерение в 10 оборотов в минуту
 	 * Если хотим другое
 	 * Считаем по формуле 60000 / обороты в минунту
 	 */
-	if (configuration & (1 << 3))
+	if (NowSettings.Clock_Setting & (1 << 3))
 	{
 		__HAL_TIM_SET_AUTORELOAD(&htim3, 29999); // Рассчитанное значение / 2
 		__HAL_TIM_SET_AUTORELOAD(&htim4, 29999); // Рассчитанное значение / 2
@@ -32,7 +32,7 @@ void Set_Channel_Raw(uint8_t channel, int32_t value)
 	{
 		absValue = absValue << 1;
 	}
-	uint8_t revers = (NowSettings.Config >> (5 - channel)) & 1;
+	uint8_t revers = NowSettings.Config & (channel == 0 ? 0x20 : 0x10);
 	switch (channel) {
 		case 0:
 			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, absValue);
@@ -81,12 +81,9 @@ void Calculate_Channel(uint8_t channel)
 		float Dif = *Kd * (error - lastError[channel]);
 		lastError[channel] = error;
 
-		if (NowSettings.Config & (channel == 0 ? 0x08 : 0x04))
+		if (abs(*CurrentSpeed) < 200 && abs(*NeedSpeed) < 10)
 		{
-			if (error == 0 && *NeedSpeed == 0)
-			{
-				Integral[channel] = 0;
-			}
+			Integral[channel] = 0;
 		}
 
 		float val = Prop + Integral[channel] + Dif;

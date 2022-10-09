@@ -15,7 +15,6 @@
 #include "gpio.h"
 
 #define ChannelCount 2
-#define SilentMode 1
 #define ProgramMemory 1
 #define CanWriteMemoryFromI2C 1
 
@@ -30,7 +29,7 @@
 	0, \
 	0, \
 	3000, \
-	1, \
+	0, \
 	233.37f, \
 	1.17f, \
 	0.0f, \
@@ -43,19 +42,20 @@
 	0.0f, \
 	0, \
 	0, \
-	1, \
+	2, \
 	0
 
 
 typedef struct
 {
-	uint8_t Config; /*	 |	7|	6|	5|	4|	3|	2|	1|	0| Default = 0x09*/
-					/*	 |MF1|MF2|RV2|SM1|SM2|DM1|DM2| */
+	uint8_t Config;
+	/*	 |	7|	6|	5|	4|	3|	2|	1|	0| Default = 0x09*/
+	/*	 |MF1|MF2|RV1|RV2|   |   |DM1|DM2| */ //MF - Min_force enable; RV - Reverse; SM - Silent Mode; DM - DirectMode
 	uint8_t BaseAddress; // 1
-	uint8_t Reserve1; // 2
+	uint8_t Calibration; // 2
 	uint8_t Clock_Setting; // 3
-	/*|	7|	6|	5|	4|	3|	2|	1|	0| Default = 0x03*/
-	/*		 |   |   |MC1|MC2|MulSens| */
+	/*	 |	7|	6|	5|	4|	3|	2|	1|	0| Default = 0x03*/
+	/*	 |	 |	 |   |   |MC1|Usd|MulSens| */ // MC1 1 - 4 magnet; 0 - 2 magnet;
 	int16_t Need_F_ChannelSpeed; // 4
 	int16_t Current_F_ChannelSpeed; // 6
 	uint16_t F_MaxAbsSpeed; // 8
@@ -67,18 +67,19 @@ typedef struct
 	int16_t Current_S_ChannelSpeed; // 26
 	uint16_t S_MaxAbsSpeed; // 28
 	uint16_t S_Min_Force; // 30
-	float S_p; // 32
+	float S_P; // 32
 	float S_I; // 36
 	float S_D; // 40
-	uint8_t Reserve2; // 44
-	uint8_t Reserve3; // 45
+
+	uint8_t Reserve1; // 44
+	uint8_t Reserve2; // 45
 	uint8_t Version; // 46
 	uint8_t WriteToMemory; // 47
 } MemoryMap;
 
 extern MemoryMap DefaultSettings;
 extern MemoryMap NowSettings;
-void Set_Configuration(uint8_t configuration);
+void Set_Configuration();
 
 void Set_Channel_Raw(uint8_t channel, int32_t value);
 void Calculate_Channel(uint8_t channel);
