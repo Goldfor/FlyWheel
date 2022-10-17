@@ -32,11 +32,10 @@ void Set_Channel_Raw(uint8_t channel, int32_t value)
 	{
 		absValue = absValue << 1;
 	}
-	uint8_t revers = NowSettings.Config & (channel == 0 ? 0x20 : 0x10);
+	uint8_t revers = NowSettings.Config & (channel == 0 ? 0x20 : 0x10) ? 1 : 0;
 	switch (channel) {
 		case 0:
 			__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, absValue);
-
 			HAL_GPIO_WritePin(POLARITY_MOTOR_GPIO_Port, POLARITY_MOTOR_Pin, polarity ^ revers);
 			break;
 		case 1:
