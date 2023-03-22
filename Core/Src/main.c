@@ -246,7 +246,7 @@ void Calibration_Motor()
 	NowSettings.Config = config;
 
 
-	float Kp = 0.0857; // Коэффициент усиления системы ШИМ-обороты
+	float Kp = 0.0857; // Коэффициент усиления системы Ш�?М-обороты
 	float Tp = 20; // Большая постоянная времени (с)
 	float Tpu = 0.5; // Малая постоянная времени (с)
 
@@ -255,7 +255,7 @@ void Calibration_Motor()
 
 	float KP = Kk;			// Kp регулятора
 	float KI = Kk/Tk*0.1;	// Ki регулятора
-	//				 ^ период ПИДа (100мс)
+	//				 ^ период П�?Да (100мс)
 
 	NowSettings.F_P = KP;
 	NowSettings.F_I = KI;
