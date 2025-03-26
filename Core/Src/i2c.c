@@ -184,9 +184,38 @@ void HAL_I2C_SlaveTxCpltCallback(I2C_HandleTypeDef *hi2c)
 	HAL_I2C_Slave_Seq_Transmit_IT(hi2c, addres, 1, I2C_NEXT_FRAME);
 }
 
+#ifdef DEBUG
+
+typedef struct  {
+	uint32_t error;
+	HAL_I2C_ModeTypeDef mode;
+	HAL_I2C_StateTypeDef state;
+} ErrorLogEntry;
+
+ErrorLogEntry errorLog[100];
+ErrorLogEntry* cursor = errorLog;
+
+void ErrorLogCursor_Next() {
+	if (++cursor == (errorLog + sizeof(errorLog) / sizeof(ErrorLogEntry)))
+		cursor = errorLog;
+}
+
+void ErrorLogAdd(I2C_HandleTypeDef* hi2c) {
+	cursor->error = HAL_I2C_GetError(hi2c);
+	cursor->mode = HAL_I2C_GetMode(hi2c);
+	cursor->state = HAL_I2C_GetState(hi2c);
+	ErrorLogCursor_Next();
+}
+
+#endif
+
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
 {
-	if( HAL_I2C_GetError(hi2c)==HAL_I2C_ERROR_AF)
+#ifdef DEBUG
+	ErrorLogAdd(hi2c);
+#endif
+	const uint32_t error = HAL_I2C_GetError(hi2c);
+	if(error & HAL_I2C_ERROR_AF)
 	{
 		offset--;
 		DefaultSettings.Current_F_ChannelSpeed = NowSettings.Current_F_ChannelSpeed;
@@ -217,8 +246,11 @@ void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
 		}
 #endif
 	}
-	else
-	{
+	if (error & HAL_I2C_ERROR_BERR) {
+		HAL_I2C_DisableListen_IT(hi2c);
+		HAL_I2C_DeInit(hi2c);
+		HAL_I2C_Init(hi2c);
+		HAL_I2C_EnableListen_IT(hi2c);
 	}
 }
 
